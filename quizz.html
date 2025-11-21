@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz App</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .container {
+        background: white;
+        width: 350px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    h2 {
+        margin-bottom: 10px;
+    }
+    .option {
+        background: #eaeaea;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 8px 0;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .option:hover {
+        background: #d4d4d4;
+    }
+    #nextBtn {
+        width: 100%;
+        padding: 10px;
+        margin-top: 15px;
+        background: #007bff;
+        color: white;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    #nextBtn:hover {
+        background: #0056b3;
+    }
+    .hide {
+        display: none;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="question">Question Text</h2>
+    <div id="options"></div>
+    <button id="nextBtn" class="hide">Next</button>
+    <h2 id="result" class="hide"></h2>
+</div>
+
+<script>
+    const questions = [
+        {
+            q: "HTML stands for?",
+            options: ["Hyper Trainer Marking Language", "Hyper Text Markup Language", "Hyper Text Marketing Language", "Hyper Text Mark Language"],
+            ans: 1
+        },
+        {
+            q: "Which tag is used to display images?",
+            options: ["<img>", "<picture>", "<image>", "<src>"],
+            ans: 0
+        },
+        {
+            q: "CSS stands for?",
+            options: ["Cascading Style Sheets", "Color System Sheet", "Creative Style System", "Coding Style Sheet"],
+            ans: 0
+        }
+    ];
+
+    let index = 0;
+    let score = 0;
+
+    const questionBox = document.getElementById("question");
+    const optionsBox = document.getElementById("options");
+    const nextBtn = document.getElementById("nextBtn");
+    const result = document.getElementById("result");
+
+    function loadQuestion() {
+        const q = questions[index];
+        questionBox.innerText = q.q;
+
+        optionsBox.innerHTML = "";
+
+        q.options.forEach((opt, i) => {
+            const div = document.createElement("div");
+            div.classList.add("option");
+            div.innerText = opt;
+            div.onclick = () => selectOption(i);
+            optionsBox.appendChild(div);
+        });
+        nextBtn.classList.add("hide");
+    }
+
+    function selectOption(selected) {
+        const correct = questions[index].ans;
+        const options = document.querySelectorAll(".option");
+
+        options.forEach((opt, i) => {
+            opt.style.pointerEvents = "none";
+            if (i === correct) opt.style.background = "#90ee90";
+            if (i === selected && i !== correct) opt.style.background = "#ff7f7f";
+        });
+
+        if (selected === correct) score++;
+
+        nextBtn.classList.remove("hide");
+    }
+
+    nextBtn.onclick = () => {
+        index++;
+        if (index < questions.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    };
+
+    function showResult() {
+        document.querySelector(".container").innerHTML = `
+            <h2>Your Score: ${score} / ${questions.length}</h2>
+            <button onclick="location.reload()" id="nextBtn">Restart</button>
+        `;
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
